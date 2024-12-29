@@ -1,22 +1,13 @@
 #include "QtMsgWindow.h"
 
-
-QtMsgWindow::QtMsgWindow(QWidget* parent)
-	: QWidget(parent)
+QtMsgWindow::QtMsgWindow(QWidget* parent) : QWidget(parent)
 {
-
 	ui.setupUi(this);
 	this->setFixedSize(250, 200);
 	//设置颜色
 	QPalette palette_qmw;
-	palette_qmw.setBrush(this->backgroundRole(), Qt::white);
+	palette_qmw.setBrush(this->backgroundRole(), QColor(240, 255, 255));
 	this->setPalette(palette_qmw);
-
-	//设置背景图片
-	//QPixmap pixmap = QPixmap(":/qm/safe").scaled(this->size());
-	//QPalette palette(this->palette());
-	//palette.setBrush(QPalette::Background, QBrush(pixmap));
-	//this->setPalette(palette);
 
 	//设置图标
 	this->setWindowTitle("学子·文件备份");
@@ -32,20 +23,39 @@ QtMsgWindow::QtMsgWindow(QWidget* parent)
 	Group->setGeometry(50, 50, 150, 100);
 	Group->setStyleSheet("QGroupBox { background-color: #7DDDFD;  font-weight: bold; color: black; }"); // 更改背景颜色
 
+	notice = new QLabel(this);
+	//notice->setStyleSheet("QLabel {margin: 40px; } ");
+	notice->setText("");
+
 
 	// 创建close按钮
 	QPushButton* close_b = new QPushButton(this);
 	close_b->setText("确定");
-	close_b->move(90, 90);
-	connect(close_b, &QPushButton::released, this, &QtMsgWindow::close);
+
+	Layout = new QVBoxLayout(Group);
+	Layout->addWidget(notice);
+	Layout->addWidget(close_b);
+
+	connect(close_b, &QPushButton::released, this, &QtMsgWindow::next);
+
+
 }
 
 QtMsgWindow::~QtMsgWindow()
 {}
 
-void QtMsgWindow::close()
+void QtMsgWindow::setMessage(QString msg)
 {
-		this->close();
-		qDebug() << "restore";
+	Group->setTitle("          " + msg + "          ");
 }
 
+void QtMsgWindow::next()
+{
+	this->close();
+	qDebug() << "restore";
+}
+
+void QtMsgWindow::setNotice(QString msg)
+{
+	notice->setText("  " + msg);
+}
