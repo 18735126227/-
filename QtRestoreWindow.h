@@ -19,6 +19,8 @@
 #include "choose_folder.h"
 #include "my_pack_and_encode.h"
 #include "QtMainWindow.h"
+#include "QtMsgWindow.h"
+#include "QtInputWindow.h"
 #include "ui_QtRestoreWindow.h"
 
 extern std::string target_folder2;
@@ -35,11 +37,13 @@ public:
 	void choose_files();// 文件
 	void excute();// 打包
 	void back();// 返回
+	void crc();
 
 private:
 	Ui::QtRestoreWindowClass ui;
 	QPushButton* folder_b;  // choose folder 按钮
 	QPushButton* file_b;	// choose file 按钮
+	QPushButton* check_b;   //CRC校验
 	QPushButton* restore_b;	// pack up 按钮 
 	QPushButton* back_b;	// back 按钮
 	QPushButton* close_b;	// close 按钮
@@ -56,5 +60,5 @@ private:
 	QRadioButton* aes128_b;
 	QRadioButton* aes192_b;
 	QRadioButton* aes256_b;
-	QVBoxLayout* Layout2;
+	QHBoxLayout* Layout2;
 };

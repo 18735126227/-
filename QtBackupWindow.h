@@ -23,6 +23,7 @@
 #include "choose_folder.h"
 #include "my_pack_and_encode.h"
 #include "QtMainWindow.h"
+#include "QtMsgWindow.h"
 
 extern std::string target_folder;
 extern std::vector <std::string> cho;
@@ -62,6 +63,7 @@ private:
 	QRadioButton* mode4_b;
 	QRadioButton* mode5_b;
 	QVBoxLayout* Layout;
+	//QGridLayout* Layout;
 
 	// aes√‹‘ø ‰»ÎøÚ
 	QLineEdit* key_txt;

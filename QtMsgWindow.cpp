@@ -6,7 +6,7 @@ QtMsgWindow::QtMsgWindow(QWidget* parent) : QWidget(parent)
 	this->setFixedSize(250, 200);
 	//设置颜色
 	QPalette palette_qmw;
-	palette_qmw.setBrush(this->backgroundRole(), QColor(240, 255, 255));
+	palette_qmw.setBrush(this->backgroundRole(), Qt::white);
 	this->setPalette(palette_qmw);
 
 	//设置图标

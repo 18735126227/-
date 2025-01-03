@@ -11,24 +11,39 @@ void ss()
 {
     qDebug() << "1";
 }
+
 QtBackupWindow::QtBackupWindow(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
     this->setFixedSize(600, 600);
+    QPalette palette_qmw;
+    palette_qmw.setBrush(this->backgroundRole(), QColor(240, 255, 255));
+    this->setPalette(palette_qmw);
+
+    //设置背景图片
+    //QPixmap pixmap = QPixmap(":/qm/safe").scaled(this->size());
+    //QPalette palette(this->palette());
+    //palette.setBrush(QPalette::Background, QBrush(pixmap));
+    //this->setPalette(palette);
+
+    //设置图标
+    this->setWindowTitle("学子·文件备份");
+    QIcon icon("./加密文件夹.png");
+    this->setWindowIcon(icon);
 
     
   //  timer_id = startTimer(1000);
 
     // 文件夹
     folder_b = new QPushButton(this);
-    folder_b->setText("choose folder");
-    folder_b->move(0, 20);
+    folder_b->setText("选择备份路径");
+    folder_b->move(250, 40);
 
     // 文件
     file_b = new QPushButton(this);
-    file_b->setText("choose files");
-    file_b->move(0, 160);
+    file_b->setText("选择备份文件");
+    file_b->move(250, 180);
 
     // 执行
     pack_b = new QPushButton(this);
@@ -47,29 +62,33 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
 
     // 文件夹
     label = new QLabel(this);
-    label->setStyleSheet("color: black; font-size: 15px;");
+    label->setGeometry(10, 10, 580, 20);
+    QFont font = label->font(); // 获取当前字体
+    font.setPointSize(10);      // 更改字体大小
+    label->setFont(font);       // 应用新的字体
     label->setAlignment(Qt::AlignLeft);
     label->setVisible(true);
-    label->setFixedWidth(500);
-    label->setFixedHeight(20);
-    label->setStyleSheet("QLabel{background-color:transparent;color:black;}");
+    label->setStyleSheet("background-color: #FFF0F5 ;color: black; border: none; font-weight: bold;");
     label->setFrameShape(QFrame::Box);
-    label->setText("我要备份备份文件夹");
+    label->setText("我的备份路径: 当前未选择");
 
     
 
     // 文件
     label2 = new QLabel(this);
-    label2->setStyleSheet("color: black; font-size: 12px;");
     label2->setAlignment(Qt::AlignLeft);
     label2->setVisible(true);
-    label2->move(0, 60);
-    label2->setText("我要备份常规文件");
+    label2->setGeometry(10, 70, 580, 100);
+
+    label2->setFont(font);       // 应用新的字体
+    label2->setText("我要备份的文件: 当前未选择");
+    label2->setStyleSheet("background-color:#E6E6FA; color: black; border: none; font-weight: bold;}");
     label2->adjustSize();
     
     //
     scrolllabel2 = new QScrollArea(this);
-    scrolllabel2->setGeometry(0, 60, 500, 100);
+    scrolllabel2->setGeometry(10, 70, 580, 100);
+    scrolllabel2->setStyleSheet("background-color:  #E6E6FA ;}");
     scrolllabel2->setWidget(label2);
 
     // folder_b: mySlot1
@@ -86,15 +105,17 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
 
     // 创建分组对象
     pack_mode_group = new QGroupBox(this);
-    pack_mode_group->setTitle("备份模式选择");
-    pack_mode_group->setGeometry(10, 200, 200, 150);
+    pack_mode_group->setTitle("          备份模式选择          ");
+    pack_mode_group->setStyleSheet("QGroupBox { background-color: #FFE4C4;  font-weight: bold; color: black; }"); // 更改背景颜色
+    pack_mode_group->setGeometry(10, 210, 200, 150);
+    pack_mode_group->setAlignment(Qt::AlignCenter);
 
     // 创建五个单选框对象
-    mode1_b = new QRadioButton("only back up", pack_mode_group);
-    mode2_b = new QRadioButton(".tar", pack_mode_group);
-    mode3_b = new QRadioButton(".tar.lz", pack_mode_group);
-    mode4_b = new QRadioButton(".tar.aes", pack_mode_group);
-    mode5_b = new QRadioButton(".tar.lz.aes", pack_mode_group);
+    mode1_b = new QRadioButton("文件仅备份", pack_mode_group);
+    mode2_b = new QRadioButton("文件打包后备份", pack_mode_group);
+    mode3_b = new QRadioButton("打包压缩后备份", pack_mode_group);
+    mode4_b = new QRadioButton("加密+打包后备份", pack_mode_group);
+    mode5_b = new QRadioButton("加密+打包压缩后备份", pack_mode_group);
 
     // 备份选项为默认值
     mode1_b->setChecked(true);
@@ -174,6 +195,9 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
 
     // 创建布局: 垂直布局, 指定其父对象为分组控件
     Layout = new QVBoxLayout(pack_mode_group);
+    //Layout = new QGridLayout(pack_mode_group);
+    //gridLayout->addWidget(widget1, 0, 0); // 第1行第1列
+    //gridLayout->addWidget(widget2, 0, 1); // 第1行第2列
     Layout->addWidget(mode1_b);
     Layout->addWidget(mode2_b);
     Layout->addWidget(mode3_b);
@@ -185,17 +209,15 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
 
     // keykey_txt_title
     label3 = new QLabel(this);
-    label3->setStyleSheet("color: black; font-size: 12px;");
+    label3->setStyleSheet("color: black; font-size: 12px;	background-color: #FFFACD; font-weight:bold ;");
     label3->setAlignment(Qt::AlignLeft);
     label3->setVisible(false);
-    label3->setFixedWidth(200);
-    label3->setFixedHeight(20);
-    label3->setText("please set the key for .aes:");
-    label3->move(250, 200);
+    label3->setGeometry(250, 210, 300, 20);
+    label3->setText("请输入加密密钥：");
 
     // 创建key_txt文本框
     key_txt = new QLineEdit(this);
-    key_txt->setGeometry(250, 230, 300, 20);
+    key_txt->setGeometry(250, 240, 300, 20);
     key_txt->setVisible(false);
     key_txt->setEchoMode(QLineEdit::Password); // 密码用圆点代替
 
@@ -206,14 +228,14 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
     label4->setVisible(false);
     label4->setFixedWidth(200);
     label4->setFixedHeight(20);
-    label4->setText("aes mode:");
+    label4->setText("加密模式:");
     label4->move(250, 270);
 
     // 创建aes密钥格式分组对象
     aes_mode_group = new QGroupBox(this);
     //aes_mode_group->setTitle("aes key mode");
     aes_mode_group->setGeometry(240, 280, 300, 40);
-    aes_mode_group->setStyleSheet("QGroupBox {border: 0;}");
+    aes_mode_group->setStyleSheet("QGroupBox {border: 0; }");
 
     // 创建三个单选框对象
     aes128_b = new QRadioButton("AES128", aes_mode_group);
@@ -253,6 +275,8 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
     // 创建时间分组对象
     scheduled_group = new QGroupBox(this);
     scheduled_group->setTitle("定时备份同步？");
+    scheduled_group->setStyleSheet("QGroupBox { background-color: 	#98FB98;  font-weight: bold; color: black; }");
+    scheduled_group->setAlignment(Qt::AlignCenter);
     scheduled_group->setGeometry(10, 400, 200, 100);
     scheduled_group->setCheckable(true);
     scheduled_group->setChecked(false);
@@ -337,16 +361,16 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
 
     // 时间组件 once
     onceLabel = new QLabel(this);
-    onceLabel->setStyleSheet("color: black; font-size: 12px;");
+    onceLabel->setStyleSheet("color: black; font-size: 12px;	background-color: #FFFACD ; font-weight:bold ;");
     onceLabel->setAlignment(Qt::AlignLeft);
     onceLabel->setVisible(false);
-    onceLabel->setFixedWidth(200);
+    onceLabel->setFixedWidth(300);
     onceLabel->setFixedHeight(20);
-    onceLabel->setText("please set the date:");
+    onceLabel->setText("请设置下次自动备份的时间");
     onceLabel->move(250, 400);
 
     datetimeEdit = new QDateTimeEdit(this);
-    datetimeEdit->move(250, 430);
+    datetimeEdit->move(250, 450);
     datetimeEdit->setVisible(false);
     datetimeEdit->setDisplayFormat("yyyy-MM-dd hh:mm:ss");
     datetimeEdit->setDateTime(QDateTime::currentDateTime());
@@ -355,17 +379,17 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
     
     // 时间组件 interval
     repeatLabel = new QLabel(this);
-    repeatLabel->setStyleSheet("color: black; font-size: 12px;");
+    repeatLabel->setStyleSheet("color: black; font-size: 12px;	background-color: #FFFACD ;font-weight:bold ;");
     repeatLabel->setAlignment(Qt::AlignLeft);
     repeatLabel->setVisible(false);
-    repeatLabel->setFixedWidth(200);
+    repeatLabel->setFixedWidth(300);
     repeatLabel->setFixedHeight(20);
-    repeatLabel->setText("please set the interval:");
+    repeatLabel->setText("请设置每次自动备份的间隔");
     repeatLabel->move(250, 400);
     
     dayEdit = new QLineEdit(this);
-    dayEdit->move(250, 430);
-    dayEdit->setGeometry(250, 430, 50, 20);
+    dayEdit->move(250, 450);
+    dayEdit->setGeometry(250, 450, 50, 20);
     dayEdit->setVisible(false);
     dayEdit->setValidator(new QIntValidator(dayEdit));
     dayEdit->setText("0");
@@ -377,10 +401,10 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
     dayLabel->setFixedWidth(30);
     dayLabel->setFixedHeight(20);
     dayLabel->setText("days");
-    dayLabel->move(305, 432);
+    dayLabel->move(305, 452);
 
     timeEdit = new QTimeEdit(this);
-    timeEdit->move(350, 430);
+    timeEdit->move(350, 450);
     timeEdit->setVisible(false);
     timeEdit->setDisplayFormat("hh:mm:ss");
     timeEdit->adjustSize();
@@ -392,15 +416,18 @@ QtBackupWindow::QtBackupWindow(QWidget *parent)
     timeLabel->setFixedWidth(100);
     timeLabel->setFixedHeight(20);
     timeLabel->setText("hh:mm:ss");
-    timeLabel->move(430, 432);
+    timeLabel->move(430, 452);
 }
 
 void QtBackupWindow::choose_folder() {  //文件夹
 
     target_folder = CSelectFolderDlg::Show();
+    //target_folder = QString::fromLocal8Bit(target_folder);
     //b2->setText(QString::fromStdString(target_folder));
-    std::string label_txt = "folder: " + target_folder;
-    label->setText(QString::fromStdString(label_txt));
+
+    std::string label_txt = target_folder;
+    label->setText("我的备份路径:"+QString::fromLocal8Bit(label_txt));
+    
 
 }
 
@@ -410,85 +437,90 @@ void QtBackupWindow::choose_files() {  //文件
     for (auto path : cho) {
         file_name += path + "\n";
     }
-    std::string label2_txt = "files choosed:\n" + file_name;
-    label2->setText(QString::fromStdString(label2_txt));
+
+    std::string label2_txt =  file_name;
+    label2->setText("选择文件:\n"+QString::fromLocal8Bit(label2_txt));
     label2->adjustSize();
 }
 
 void QtBackupWindow::excute() {
     // void setEchoMode(EchoMode)
-   
-
-    QString name = key_txt->text();
-    std::string s = name.toStdString();
-    const char *key = s.c_str();
-    // qtimer = new QTimerEvent();
-
-
-    if (is_scheduled == 0) {
-        my_packup(target_folder, cho, key, aes_flag, mode_flag);
-    }
-    else
+    if (cho.size() != 0&&target_folder !="")
     {
-        if (scheduled_mode == 0)
+        QString name = key_txt->text();
+        std::string s = name.toStdString();
+        const char* key = s.c_str();
+        // qtimer = new QTimerEvent();
+        if (mode_flag > 3 && name == "")
         {
-            QDateTime dateTime1 = QDateTime::currentDateTime(); 
-            QDateTime dateTime2 = datetimeEdit->dateTime();
-            int seconds = dateTime1.secsTo(dateTime2);
-            seconds += 1;
-            qDebug() << dateTime1<<" "<<dateTime2 <<" "<<seconds<<"\n";
-            if (seconds > 0) {
-                qDebug() << target_folder << " " << key << " " << aes_flag << " " << mode_flag << "\n";
-                qtimer = new QTimer();
-                qtimer->singleShot(seconds*1000, this, [=] {
-                    //想要执行的代码
-                    my_packup(target_folder, cho, key, aes_flag, mode_flag);
-                    });
-            }
+            QtMsgWindow* pic = new QtMsgWindow();
+            QString t_s = "密码为空！";
+            pic->setMessage(t_s);
+            pic->show();
         }
-        else
-        {
-            
-            QString dTime_QS = dayEdit->text();
-            std::string dTime_s = dTime_QS.toStdString();
-            int dTime = atoi(dTime_s.c_str());
-            int htime = timeEdit->time().hour(), mtime = timeEdit->time().minute(), stime = timeEdit->time().second();
-            int seconds = (int)(86400*dTime * +3600 * htime + 60 * mtime + stime);
-            qDebug() <<dTime << " " << htime << " " << mtime<<" "<<stime<<" "<<seconds << "\n";
-            if (seconds > 0) {
-                // qDebug() << target_folder << " " << key << " " << aes_flag << " " << mode_flag << "\n";
-                timer_id = startTimer(seconds*1000);
+        else {
+            if (is_scheduled == 0) {
+                my_packup(target_folder, cho, key, aes_flag, mode_flag);
             }
+            else
+            {
+                if (scheduled_mode == 0)
+                {
+                    QDateTime dateTime1 = QDateTime::currentDateTime();
+                    QDateTime dateTime2 = datetimeEdit->dateTime();
+                    int seconds = dateTime1.secsTo(dateTime2);
+                    seconds += 1;
+                    qDebug() << dateTime1 << " " << dateTime2 << " " << seconds << "\n";
+                    if (seconds > 0) {
+                        qDebug() << target_folder << " " << key << " " << aes_flag << " " << mode_flag << "\n";
+                        qtimer = new QTimer();
+                        qtimer->singleShot(seconds * 1000, this, [=] {
+                            //想要执行的代码
+                            my_packup(target_folder, cho, key, aes_flag, mode_flag);
+                            });
+                    }
+                }
+                else
+                {
+
+                    QString dTime_QS = dayEdit->text();
+                    std::string dTime_s = dTime_QS.toStdString();
+                    int dTime = atoi(dTime_s.c_str());
+                    int htime = timeEdit->time().hour(), mtime = timeEdit->time().minute(), stime = timeEdit->time().second();
+                    int seconds = (int)(86400 * dTime * +3600 * htime + 60 * mtime + stime);
+                    qDebug() << dTime << " " << htime << " " << mtime << " " << stime << " " << seconds << "\n";
+                    if (seconds > 0) {
+                        // qDebug() << target_folder << " " << key << " " << aes_flag << " " << mode_flag << "\n";
+                        timer_id = startTimer(seconds * 1000);
+                    }
+                }
+
+                //qDebug() << "backup";
+
+            }
+
+            this->back();
+            QtMsgWindow* pic = new QtMsgWindow();
+            QString t_s = "备份成功!";
+            pic->setMessage(t_s);
+            pic->show();
         }
+        cho.clear();
+        target_folder = "";
     }
- 
-  //--------------------old version (without QT)--------------------
-  
-  //  my_packup(target_folder,cho,key,aes_flag,mode_flag);
-  /*
-    for (auto path : cho)
-        file_to_folder(path, target_folder);
+    else if(cho.size() == 0) {
+        QtMsgWindow* pic = new QtMsgWindow();
+        QString t_s = "未选择文件";
+        pic->setMessage(t_s);
+        pic->show();
+    }
+    else {
+        QtMsgWindow* pic = new QtMsgWindow();
+        QString t_s = "未选择路径";
+        pic->setMessage(t_s);
+        pic->show();
+    }
     
-  
-    QString name = key_txt->text();
-    std::string key = name.toStdString();
-    qDebug() << "key: " << key << "\n";
-    qDebug() << "mode flag: " << mode_flag << "\n";
-    qDebug() << "aes flag: " << aes_flag << "\n";
-   
-    QString name = key_txt->text();
-    std::string key = name.toStdString();
-
-    my_pack(target_folder, "C:\\Users\\fez0618\\Desktop\\123.tar");
-    my_encode("C:\\Users\\fez0618\\Desktop\\123.tar", "C:\\Users\\fez0618\\Desktop\\123.tar.aes", key.c_str(), aes::AES_128);
-    my_decode("C:\\Users\\fez0618\\Desktop\\123.tar.aes", "C:\\Users\\fez0618\\Desktop\\123_decode.tar", key.c_str(), aes::AES_128);
-    my_unpack("C:\\Users\\fez0618\\Desktop\\123_decode.tar", "C:\\Users\\fez0618\\Desktop\\123_decode_unpack");
-     */
-
-    // aes Aes;
-    // Aes.setKey((unsigned char*)"123", aes::AES_128);
-    // Aes.encryptFile("C:\\Users\\fez0618\\Desktop\\0.pdf", "C:\\Users\\fez0618\\Desktop\\0.pdf.aes");
-    // Aes.decryptFile("C:\\Users\\fez0618\\Desktop\\0.pdf.aes", "C:\\Users\\fez0618\\Desktop\\0_decode.pdf");
 }
 
 void QtBackupWindow::back() {

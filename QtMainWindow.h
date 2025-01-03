@@ -22,6 +22,7 @@ public:
 	~QtMainWindow();
 	void next();
 	//void close();
+	std::string msg;
 
 private:
 	Ui::QtMainWindowClass ui;

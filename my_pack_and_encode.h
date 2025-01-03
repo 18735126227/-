@@ -29,5 +29,18 @@ void removeDir(std::string dirPath);
 void my_packup(std::string target_folder,std::vector <std::string> cho, const char* key,int aes_flag,int mode_flag);
 void my_restore(std::string target_folder, std::vector <std::string> cho, const char* key, int aes_flag);
 
+class CRC32 {
+public:
+    CRC32();
+    uint32_t compute(const std::string filename);
+private:
+    uint32_t crc_table[256];
+    void generate_crc_table();
+};
 
+void save_crc_to_txt(const std::string filename, const std::string targetFolder);
+
+std::string get_file_name(const std::string& filepath);
+std::string exclude_file_type(const std::string& filepath);
+uint32_t read_from_txt(const std::string& filename);
 #endif

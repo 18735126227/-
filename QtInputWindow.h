@@ -1,5 +1,5 @@
 #pragma once
-
+//假的
 #include <QWidget>
 #include <QLabel>
 #include <QGroupBox>
@@ -10,7 +10,7 @@
 #include <QString> 
 #include <qlineedit.h>
 #include <QDialog>
-#include <qmessagebox.h>
+
 class QtInputWindow : public QDialog // 改为 QDialog
 {
     Q_OBJECT
@@ -18,7 +18,7 @@ class QtInputWindow : public QDialog // 改为 QDialog
 public:
     explicit QtInputWindow(QWidget* parent = nullptr);
     ~QtInputWindow();
-    QString getPWD(); 
+    QString getPWD();
     int getMode();
     void next();// 获取密码的方法
 

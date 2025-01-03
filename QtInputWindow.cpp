@@ -1,127 +1,89 @@
 #include"QtInputWindow.h"
 
-
 QtInputWindow::QtInputWindow(QWidget* parent)
-	: QDialog(parent)
+	: QWidget(parent)
 {
-	this->setFixedSize(400, 280);
-	//è®¾ç½®é¢œè‰²
+	ui.setupUi(this);
+	this->setFixedSize(250, 200);
+	//ÉèÖÃÑÕÉ«
 	QPalette palette_qmw;
-	palette_qmw.setBrush(this->backgroundRole(), QColor(240, 255, 255));
+	palette_qmw.setBrush(this->backgroundRole(), Qt::white);
 	this->setPalette(palette_qmw);
 
-	//è®¾ç½®å›¾æ ‡
-	this->setWindowTitle("å­¦å­Â·æ–‡ä»¶å¤‡ä»½");
-	QIcon icon("./åŠ å¯†æ–‡ä»¶å¤¹.png");
+	//ÉèÖÃÍ¼±ê
+	this->setWindowTitle("Ñ§×Ó¡¤ÎÄ¼þ±¸·Ý");
+	QIcon icon("./¼ÓÃÜÎÄ¼þ¼Ð.png");
 	this->setWindowIcon(icon);
 
 
-	// åˆ›å»ºåˆ†ç»„å¯¹è±¡
+	// ´´½¨·Ö×é¶ÔÏó
 	Group = new QGroupBox(this);
-	Group->setTitle("      æ£€æµ‹åˆ°åŠ å¯†æ–‡ä»¶ï¼Œè¯·è¾“å…¥å¯†ç ï¼š     ");
-	Group->setAlignment(Qt::AlignCenter);
+	Group->setTitle("            ²Ù×÷³É¹¦           ");
 
 
-	Group->setGeometry(60, 60, 280, 160);
-	Group->setStyleSheet("QGroupBox { background-color: #7DDDFD;  font-weight: bold; color: black; }"); // æ›´æ”¹èƒŒæ™¯é¢œè‰²
+	Group->setGeometry(50, 50, 150, 100);
+	Group->setStyleSheet("QGroupBox { background-color: #7DDDFD;  font-weight: bold; color: black; }"); // ¸ü¸Ä±³¾°ÑÕÉ«
+
+	notice = new QLabel(this);
+	//notice->setStyleSheet("QLabel {margin: 40px; } ");
+	notice->setText("");
 
 
-	// åˆ›å»ºkey_txtæ–‡æœ¬æ¡†
+	// ´´½¨close°´Å¥
+	QPushButton* close_b = new QPushButton(this);
+	close_b->setText("È·¶¨");
+
+	Layout = new QVBoxLayout(Group);
+	Layout->addWidget(notice);
+	Layout->addWidget(close_b);
+
+	connect(close_b, &QPushButton::released, this, &QtInputWindow::next);
+
+	// ´´½¨key_txtÎÄ±¾¿ò
 	key_txt = new QLineEdit(this);
-	key_txt->setGeometry(80, 90, 250, 20);
-	key_txt->setEchoMode(QLineEdit::Password); // å¯†ç ç”¨åœ†ç‚¹ä»£æ›¿
+	key_txt->setGeometry(15, 250, 250, 20);
+	key_txt->setEchoMode(QLineEdit::Password); // ÃÜÂëÓÃÔ²µã´úÌæ
 
-	// åˆ›å»ºaeså¯†é’¥æ ¼å¼åˆ†ç»„å¯¹è±¡
-	aes_mode_group = new QGroupBox(Group);
-	aes_mode_group->setTitle("é€‰æ‹©è§£å¯†æ¨¡å¼");
-	aes_mode_group->setGeometry(10, 60, 250, 60);
+	// ´´½¨aesÃÜÔ¿¸ñÊ½·Ö×é¶ÔÏó
+	aes_mode_group = new QGroupBox(this);
+	aes_mode_group->setTitle("Ñ¡Ôñ½âÃÜÄ£Ê½");
+	aes_mode_group->setGeometry(10, 280 + c + c + c, 250, 60);
 	aes_mode_group->setStyleSheet("border: 0");
 
-	// åˆ›å»ºcloseæŒ‰é’®
-	QPushButton* close_b = new QPushButton(Group);
-	close_b->setText("ç¡®å®š");
-	
-	
-
-
-
-	
-
-	
-
-	// åˆ›å»ºä¸‰ä¸ªå•é€‰æ¡†å¯¹è±¡
+	// ´´½¨Èý¸öµ¥Ñ¡¿ò¶ÔÏó
 	aes128_b = new QRadioButton("AES128", aes_mode_group);
 	aes192_b = new QRadioButton("AES192", aes_mode_group);
 	aes256_b = new QRadioButton("AES256", aes_mode_group);
 
-	// aes128é€‰é¡¹ä¸ºé»˜è®¤å€¼
+	// aes128Ñ¡ÏîÎªÄ¬ÈÏÖµ
 	aes128_b->setChecked(true);
 
-	// èŽ·å–aes_bå€¼
+	// »ñÈ¡aes_bÖµ
 	connect(aes128_b, &QRadioButton::toggled, [=](bool isChecked) {
 		if (isChecked == true)
-			aes_flag3 = 1;
+			aes_flag2 = 1;
 		});
 	connect(aes192_b, &QRadioButton::toggled, [=](bool isChecked) {
 		if (isChecked == true)
-			aes_flag3 = 2;
+			aes_flag2 = 2;
 		});
 	connect(aes256_b, &QRadioButton::toggled, [=](bool isChecked) {
 		if (isChecked == true)
-			aes_flag3 = 3;
+			aes_flag2 = 3;
 		});
-	connect(close_b, &QPushButton::clicked, this, &QtInputWindow::onCloseButtonClicked);
-	// åˆ›å»ºå¸ƒå±€: åž‚ç›´å¸ƒå±€, æŒ‡å®šå…¶çˆ¶å¯¹è±¡ä¸ºåˆ†ç»„æŽ§ä»¶
+
+	// ´´½¨²¼¾Ö: ´¹Ö±²¼¾Ö, Ö¸¶¨Æä¸¸¶ÔÏóÎª·Ö×é¿Ø¼þ
 	Layout2 = new QHBoxLayout(aes_mode_group);
 	Layout2->addWidget(aes128_b);
 	Layout2->addWidget(aes192_b);
 	Layout2->addWidget(aes256_b);
 
-	// å°†å¸ƒå±€æŽ§ä»¶æ·»åŠ åˆ°ç»„ä¸­
+	// ½«²¼¾Ö¿Ø¼þÌí¼Óµ½×éÖÐ
 	aes_mode_group->setLayout(Layout2);
-
-	Layout = new QVBoxLayout(Group);
-	Layout->addLayout(Layout2);
-	Layout->addSpacing(60);
-	Layout->addWidget(close_b);
-	
-
-	//connect(close_b, &QPushButton::released, this, &QtInputWindow::next);
 }
 
 void QtInputWindow::next()
 {
 	this->close();
 	
-}
-
-QtInputWindow::~QtInputWindow() {
-	// æžæž„å‡½æ•°é€»è¾‘ï¼Œå¦‚æžœæœ‰çš„è¯
-}
-
-QString QtInputWindow::getPWD()
-{
-	return key_txt->text();
-}
-
-int QtInputWindow::getMode()
-{
-	return aes_flag3;
-}
-
-void QtInputWindow::onCloseButtonClicked() {
-	// æ˜¾ç¤ºç¡®è®¤å¯¹è¯æ¡†ï¼Œè¯¢é—®ç”¨æˆ·æ˜¯å¦çœŸçš„è¦å…³é—­
-	QMessageBox::StandardButton reply;
-	reply = QMessageBox::question(this, "ç¡®è®¤",
-		"æ‰€æœ‰åŠ å¯†æ–‡ä»¶éƒ½å°†ä½¿ç”¨æ­¤å¯†ç ï¼Œæ˜¯å¦ç»§ç»­?",
-		QMessageBox::Yes | QMessageBox::No);
-
-	if (reply == QMessageBox::Yes) {
-		// å¦‚æžœç”¨æˆ·é€‰æ‹©äº†â€œæ˜¯â€ï¼Œåˆ™å…³é—­çª—å£
-		this->accept();  // æˆ–è€…ä½¿ç”¨ this->close();
-	}
-	else {
-		this->close();
-		
-	}
 }

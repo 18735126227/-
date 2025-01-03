@@ -4,160 +4,230 @@ std::string target_folder2;
 std::vector <std::string> cho2;
 int file_format = 0;
 int aes_flag2 = 1;
-
+int  c = 40;
 QtRestoreWindow::QtRestoreWindow(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
-	this->setFixedSize(600, 600);
+	this->setFixedSize(600, 500);
 
-	// ÎÄ¼þ
+	//è®¾ç½®å›¾æ ‡
+	this->setWindowTitle("å­¦å­Â·æ–‡ä»¶å¤‡ä»½");
+	QIcon icon("./åŠ å¯†æ–‡ä»¶å¤¹.png");
+	this->setWindowIcon(icon);
+
+	QPalette palette_qmw;
+	palette_qmw.setBrush(this->backgroundRole(), QColor(240, 255, 255));
+	this->setPalette(palette_qmw);
+
+
+	// æ–‡ä»¶
 	file_b = new QPushButton(this);
-	file_b->setText("choose files");
-	file_b->move(0, 100);
+	file_b->setText("é€‰æ‹©æ¢å¤æ–‡ä»¶");
+	file_b->move(125, 180+c+c);
 
-	// ÎÄ¼þ¼Ð
+	check_b = new QPushButton(this);
+	check_b->setText("è¿›è¡ŒCRCæ ¡éªŒ");
+	check_b->move(375, 180+c+c);
+
+	// æ–‡ä»¶å¤¹
 	folder_b = new QPushButton(this);
-	folder_b->setText("choose folder");
-	folder_b->move(0, 160);
+	folder_b->setText("é€‰æ‹©æ¢å¤è·¯å¾„");
+	folder_b->move(250, 40+c);
 
-	// Ö´ÐÐ
+
+	// æ‰§è¡Œ
 	restore_b = new QPushButton(this);
-	restore_b->setText("restore");
-	restore_b->move(320, 550);
+	restore_b->setText("æ¢å¤");
+	restore_b->move(320, 460);
 
 	// back
 	back_b = new QPushButton(this);
-	back_b->setText("back");
-	back_b->move(410, 550);
+	back_b->setText("è¿”å›ž");
+	back_b->move(410, 460);
 
 	// close
 	close_b = new QPushButton(this);
-	close_b->setText("close");
-	close_b->move(500, 550);
+	close_b->setText("å…³é—­");
+	close_b->move(500, 460);
 
-	// ÎÄ¼þ
+	// æ–‡ä»¶
 	label2 = new QLabel(this);
-	label2->setStyleSheet("color: black; font-size: 12px;");
+	QFont font = label2->font(); // èŽ·å–å½“å‰å­—ä½“
+	font.setPointSize(10);      // æ›´æ”¹å­—ä½“å¤§å°
+	label2->setFont(font);       // åº”ç”¨æ–°çš„å­—ä½“
+	label2->setStyleSheet("background-color:#E6E6FA; color: black; border: none; font-weight: bold;");
 	label2->setAlignment(Qt::AlignLeft);
 	label2->setVisible(true);
-	label2->setText("files choosed: ");
+	label2->setGeometry(10, 70+c+c, 580, 100);
+	label2->setText("æˆ‘è¦æ¢å¤çš„æ–‡ä»¶:å½“å‰æœªé€‰æ‹©");
 	label2->adjustSize();
 
 	//
 	scrolllabel2 = new QScrollArea(this);
-	scrolllabel2->setGeometry(0, 0, 500, 100);
+	scrolllabel2->setGeometry(10, 70+c+c, 580, 100);
 	scrolllabel2->setWidget(label2);
+	scrolllabel2->setStyleSheet("background-color:  #E6E6FA ;}");
 
-	// ÎÄ¼þ¼Ð
+	// æ–‡ä»¶å¤¹
 	label = new QLabel(this);
-	label->setStyleSheet("color: black; font-size: 15px;");
+	label->setFont(font);
+	label->setStyleSheet("background-color: #FFF0F5 ;color: black; border: none; font-weight: bold;");
 	label->setAlignment(Qt::AlignLeft);
 	label->setVisible(true);
-	label->move(0, 140);
-	label->setFixedWidth(500);
-	label->setFixedHeight(20);
-	label->setStyleSheet("QLabel{background-color:transparent;color:black;}");
+	label->setGeometry(10, 10+c, 580, 20);
 	label->setFrameShape(QFrame::Box);
-	label->setText("restore to folder: ");
+	label->setText("æˆ‘è¦æ¢å¤çš„ç›®æ ‡è·¯å¾„:å½“å‰æœªé€‰æ‹©");
 
 	// file_b: choose_files
 	connect(file_b, &QPushButton::released, this, &QtRestoreWindow::choose_files);
 	// folder_b: choose_folder
 	connect(folder_b, &QPushButton::released, this, &QtRestoreWindow::choose_folder);
-	// restore_b: Ö´ÐÐ
+
+	connect(check_b, &QPushButton::released, this, &QtRestoreWindow::crc);
+	// restore_b: æ‰§è¡Œ
 	connect(restore_b, &QPushButton::released, this, &QtRestoreWindow::excute);
-	// back_b: ·µ»Ø
+	// back_b: è¿”å›ž
 	connect(back_b, &QPushButton::released, this, &QtRestoreWindow::back);
-	// close_b: ¹Ø±Õ½çÃæ
+	// close_b: å…³é—­ç•Œé¢
 	connect(close_b, &QPushButton::pressed, this, &QtRestoreWindow::close);
 
-	// keykey_txt_title
-	label3 = new QLabel(this);
-	label3->setStyleSheet("color: black; font-size: 12px;");
-	label3->setAlignment(Qt::AlignLeft);
-	label3->setVisible(true);
-	label3->setFixedWidth(200);
-	label3->setFixedHeight(20);
-	label3->setText("use the key for all the .aes files:");
-	label3->move(5, 210);
-
-	// ´´½¨key_txtÎÄ±¾¿ò
-	key_txt = new QLineEdit(this);
-	key_txt->setGeometry(0, 230, 200, 20);
-	key_txt->setEchoMode(QLineEdit::Password); // ÃÜÂëÓÃÔ²µã´úÌæ
-
-	// ´´½¨aesÃÜÔ¿¸ñÊ½·Ö×é¶ÔÏó
-	aes_mode_group = new QGroupBox(this);
-	aes_mode_group->setTitle("aes key mode");
-	aes_mode_group->setGeometry(0, 260, 200, 90);
-
-	// ´´½¨Èý¸öµ¥Ñ¡¿ò¶ÔÏó
-	aes128_b = new QRadioButton("AES128", aes_mode_group);
-	aes192_b = new QRadioButton("AES192", aes_mode_group);
-	aes256_b = new QRadioButton("AES256", aes_mode_group);
-
-	// aes128Ñ¡ÏîÎªÄ¬ÈÏÖµ
-	aes128_b->setChecked(true);
-
-	// »ñÈ¡aes_bÖµ
-	connect(aes128_b, &QRadioButton::toggled, [=](bool isChecked) {
-		if (isChecked == true)
-			aes_flag2 = 1;
-		});
-	connect(aes192_b, &QRadioButton::toggled, [=](bool isChecked) {
-		if (isChecked == true)
-			aes_flag2 = 2;
-		});
-	connect(aes256_b, &QRadioButton::toggled, [=](bool isChecked) {
-		if (isChecked == true)
-			aes_flag2 = 3;
-		});
-
-	// ´´½¨²¼¾Ö: ´¹Ö±²¼¾Ö, Ö¸¶¨Æä¸¸¶ÔÏóÎª·Ö×é¿Ø¼þ
-	Layout2 = new QVBoxLayout(aes_mode_group);
-	Layout2->addWidget(aes128_b);
-	Layout2->addWidget(aes192_b);
-	Layout2->addWidget(aes256_b);
-
-	// ½«²¼¾Ö¿Ø¼þÌí¼Óµ½×éÖÐ
-	aes_mode_group->setLayout(Layout2);
 }
 
-void QtRestoreWindow::choose_folder() {  //ÎÄ¼þ¼Ð
+void QtRestoreWindow::choose_folder() {  //æ–‡ä»¶å¤¹
 
 	target_folder2 = CSelectFolderDlg::Show();
 	//b2->setText(QString::fromStdString(target_folder2));
-	std::string label_txt = "folder: " + target_folder2;
-	label->setText(QString::fromStdString(label_txt));
+	std::string label_txt = target_folder2;
+	label->setText(QString::fromLocal8Bit(label_txt));
 
 }
 
-void QtRestoreWindow::choose_files() {  //ÎÄ¼þ
+void QtRestoreWindow::choose_files() {  //æ–‡ä»¶
 	cho2 = chooseFiles();
 	std::string file_name;
 	for (auto path : cho2) {
 		file_name += path + "\n";
 	}
-	std::string label2_txt = "files choosed:\n" + file_name;
-	label2->setText(QString::fromStdString(label2_txt));
+	std::string label2_txt =  file_name;
+	label2->setText(QString::fromLocal8Bit(label2_txt));
 	label2->adjustSize();
 }
 
 void QtRestoreWindow::excute() {
-	QString name = key_txt->text();
-	std::string s = name.toStdString();
-	const char* key = s.c_str();
-	qDebug() << key << "\n";
-//	qDebug() << target_folder2 << "\n";
-	my_restore(target_folder2, cho2, key, aes_flag2);
-	
+	const char* key="";
+	int flag_aes=0;
+	if (target_folder2 != "" && cho2.size() != 0)
+	{
+		
+		//	qDebug() << target_folder2 << "\n";
+		for (auto i : cho2)
+		{
+			if (i.substr(i.find_last_of('.') + 1) == "aes")
+			{
+				flag_aes = 1;
+				break;
+			}
+		}
+		if (flag_aes == 1)
+		{
+			QtInputWindow* dia = new QtInputWindow(this);
+			if (dia->exec() == QDialog::Accepted) {
+				// ç”¨æˆ·ç‚¹å‡»äº†â€œç¡®å®šâ€
+				QString password = dia->getPWD(); // èŽ·å–å¯†ç 
+				aes_flag2 = dia->getMode(); 
+				std::string ts = password.toStdString();
+				key = ts.c_str();
+				my_restore(target_folder2, cho2, key, aes_flag2);
+				this->back();
+				QtMsgWindow* pic = new QtMsgWindow();
+				QString t_s = "æ¢å¤æˆåŠŸ!";
+				pic->setMessage(t_s);
+				pic->show();
+				
+			}
+			else {
+				QtMsgWindow* pic = new QtMsgWindow();
+				QString t_s = "æ¢å¤å·²ä¸­æ–­";
+				pic->setMessage(t_s);
+				pic->show();
+			}
+		}
+		else {
+			my_restore(target_folder2, cho2, key, aes_flag2);
+			this->back();
+			QtMsgWindow* pic = new QtMsgWindow();
+			QString t_s = "æ¢å¤æˆåŠŸ!";
+			pic->setMessage(t_s);
+			pic->show();
+		}
+		
+		
+	}
+	else if (cho2.size() == 0) {
+		QtMsgWindow* pic = new QtMsgWindow();
+		QString t_s = "æœªé€‰æ‹©æ–‡ä»¶";
+		pic->setMessage(t_s);
+		pic->show();
+	}
+	else {
+		QtMsgWindow* pic = new QtMsgWindow();
+		QString t_s = "æœªé€‰æ‹©è·¯å¾„";
+		pic->setMessage(t_s);
+		pic->show();
+	}
 }
 
 void QtRestoreWindow::back() {
 	this->close();
 	QtMainWindow* pic = new QtMainWindow();
 	pic->show();
+}
+
+void QtRestoreWindow::crc() {
+	if (cho2.size() != 0)
+	{
+		for (auto i : cho2)
+		{
+			std::string t1 = i + ".txt";
+			uint32_t crc_value_r = read_from_txt(t1);
+			if (crc_value_r == 941871365)
+			{
+				QtMsgWindow* pic = new QtMsgWindow();
+				QString t_s = "æ ¡éªŒæ–‡ä»¶å¼‚å¸¸";
+				pic->setMessage(t_s);
+				pic->show();
+			}
+			else {
+				CRC32 crc_calculator;
+				uint32_t crc_value = crc_calculator.compute(i);
+				if (crc_value_r == crc_value)
+				{
+					QtMsgWindow* pic = new QtMsgWindow();
+					QString t_s = "æ–‡ä»¶æ— è¯¯!";
+					pic->setMessage(t_s);
+					pic->setNotice(QString::fromLocal8Bit(get_file_name(i)));
+					pic->show();
+				}
+				else {
+					QtMsgWindow* pic = new QtMsgWindow();
+					QString t_s = "æ–‡ä»¶å¼‚å¸¸!";
+					pic->setMessage(t_s);
+					pic->setNotice(QString::fromLocal8Bit(get_file_name(i)));
+					pic->show();
+				}
+			}
+		}
+	}
+	else  {
+		QtMsgWindow* pic = new QtMsgWindow();
+		QString t_s = "æœªé€‰æ‹©æ–‡ä»¶";
+		pic->setMessage(t_s);
+		pic->show();
+	}
+
+		
+	
 }
 
 QtRestoreWindow::~QtRestoreWindow()
