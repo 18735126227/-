@@ -1,5 +1,5 @@
 #pragma once
-//¼ÙµÄ
+
 #include <QWidget>
 #include <QLabel>
 #include <QGroupBox>
@@ -10,7 +10,7 @@
 #include <QString> 
 #include <qlineedit.h>
 #include <QDialog>
-
+#include <qmessagebox.h>
 class QtInputWindow : public QDialog // ¸ÄÎª QDialog
 {
     Q_OBJECT
